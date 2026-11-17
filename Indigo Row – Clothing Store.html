@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Indigo Row – Clothing Store</title>
+<style>
+:root{--bg:#f3f5f9;--surface:#fff;--ink:#14213d;--muted:#5b6478;--line:#dde2ec;--accent:#e4572e;--accent-ink:#fff;--navy:#14213d;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1424;--surface:#18203a;--ink:#eef1f8;--muted:#9aa4bd;--line:#2a3558;--navy:#eef1f8}}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Instrument Sans","Segoe UI",system-ui,sans-serif;line-height:1.5}
+h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:600;line-height:1.1;margin:0}
+button{font:inherit;cursor:pointer;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 5vw}
+.logo{font-family:"Fraunces",Georgia,serif;font-size:1.4rem;font-weight:700;letter-spacing:-.02em}
+nav{display:flex;gap:20px;font-size:.95rem}
+nav a{color:var(--muted);text-decoration:none}nav a:hover{color:var(--ink)}
+.cartbtn{background:var(--navy);color:var(--bg);border:0;border-radius:999px;padding:8px 16px;font-weight:600}
+.hero{padding:9vh 5vw 7vh;display:grid;grid-template-columns:1.2fr 1fr;gap:5vw;align-items:center}
+.hero h1{font-size:clamp(2.6rem,7vw,5.4rem);letter-spacing:-.03em}
+.hero p{max-width:46ch;color:var(--muted);font-size:1.1rem;margin:20px 0 28px}
+.cta{display:inline-block;background:var(--accent);color:var(--accent-ink);border:0;border-radius:6px;padding:14px 26px;font-weight:700;text-decoration:none}
+.swatches{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.swatches div{aspect-ratio:3/4;border-radius:8px;display:flex;align-items:flex-end;padding:10px;font-size:.8rem;font-weight:600;color:#fff}
+.swatches div:nth-child(2){transform:translateY(24px)}
+main{padding:0 5vw 6vh}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin:36px 0 20px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 16px}
+.chip[aria-pressed="true"]{background:var(--navy);color:var(--bg);border-color:var(--navy)}
+select{font:inherit;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:7px 10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:22px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
+.pic{aspect-ratio:4/5;display:grid;place-items:center;font-size:4.5rem;position:relative}
+.tag{position:absolute;top:10px;left:10px;background:var(--accent);color:#fff;font-size:.75rem;font-weight:700;padding:3px 9px;border-radius:4px}
+.info{padding:14px;display:flex;flex-direction:column;gap:8px;flex:1}
+.info h3{font-size:1.1rem}
+.price{font-weight:700}.price s{color:var(--muted);font-weight:400;margin-left:6px}
+.sizes{display:flex;gap:6px}
+.sz{min-width:34px;border:1px solid var(--line);background:transparent;border-radius:4px;padding:4px 6px;font-size:.85rem}
+.sz[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--surface)}
+.add{margin-top:auto;background:var(--navy);color:var(--bg);border:0;border-radius:6px;padding:10px;font-weight:600}
+.empty{grid-column:1/-1;color:var(--muted);padding:40px 0}
+footer{border-top:1px solid var(--line);padding:30px 5vw;color:var(--muted);font-size:.9rem}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .2s;z-index:8}
+.scrim.on{opacity:1;pointer-events:auto}
+aside{position:fixed;top:0;right:0;bottom:0;width:min(400px,100%);background:var(--surface);z-index:9;transform:translateX(100%);transition:transform .25s;display:flex;flex-direction:column;padding:calc(18px + env(safe-area-inset-top,0px)) 18px calc(18px + env(safe-area-inset-bottom,0px))}
+aside.on{transform:none}
+.ahead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.x{background:none;border:0;font-size:1.6rem;line-height:1}
+.items{flex:1;overflow:auto}
+.row{display:grid;grid-template-columns:56px 1fr auto;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center}
+.row .t{width:56px;height:56px;border-radius:6px;display:grid;place-items:center;font-size:1.8rem}
+.qty{display:flex;align-items:center;gap:8px;margin-top:4px}
+.qty button{width:26px;height:26px;border:1px solid var(--line);background:none;border-radius:4px}
+.rm{background:none;border:0;color:var(--muted);text-decoration:underline;font-size:.85rem}
+.sum{border-top:1px solid var(--line);padding-top:14px}
+.sum div{display:flex;justify-content:space-between;margin-bottom:6px}
+.sum .tot{font-weight:700;font-size:1.15rem}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,40px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:6px;opacity:0;transition:.25s;z-index:10}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:760px){.hero{grid-template-columns:1fr}nav{display:none}.swatches div:nth-child(2){transform:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header>
+  <span class="logo">Indigo Row</span>
+  <nav><a href="#shop">Shop</a><a href="#about">About</a></nav>
+  <button class="cartbtn" id="open" aria-label="Open cart">Cart (<span id="count">0</span>)</button>
+</header>
+
+<section class="hero">
+  <div>
+    <h1>Clothes cut for everyday wear.</h1>
+    <p>Cotton shirts, linen trousers and light jackets in a small range of colours. Free delivery on orders above ₹2,999.</p>
+    <a class="cta" href="#shop">Shop the collection</a>
+  </div>
+  <div class="swatches" aria-hidden="true">
+    <div style="background:#1f3a73">Indigo</div><div style="background:#e4572e">Rust</div><div style="background:#6b8f71">Sage</div>
+  </div>
+</section>
+
+<main id="shop">
+  <div class="bar">
+    <div class="chips" id="chips"></div>
+    <label>Sort <select id="sort"><option value="0">Featured</option><option value="1">Price: low to high</option><option value="2">Price: high to low</option></select></label>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer id="about">Indigo Row is a demo storefront. Orders are not processed.</footer>
+
+<div class="scrim" id="scrim"></div>
+<aside id="drawer" aria-label="Shopping cart" aria-hidden="true">
+  <div class="ahead"><h2>Your cart</h2><button class="x" id="close" aria-label="Close cart">×</button></div>
+  <div class="items" id="items"></div>
+  <div class="sum">
+    <div><span>Subtotal</span><span id="sub">₹0</span></div>
+    <div><span>Delivery</span><span id="ship">₹0</span></div>
+    <div class="tot"><span>Total</span><span id="tot">₹0</span></div>
+    <button class="cta" style="width:100%;margin-top:10px;border:0" id="checkout">Place order</button>
+  </div>
+</aside>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const P=[
+{id:1,n:"Oxford shirt",c:"Tops",p:1799,o:2299,e:"👔",bg:"#c9d6ee",s:["S","M","L","XL"],t:"Sale"},
+{id:2,n:"Boxy cotton tee",c:"Tops",p:799,e:"👕",bg:"#f2c9b8",s:["S","M","L","XL"]},
+{id:3,n:"Linen trousers",c:"Bottoms",p:2299,e:"👖",bg:"#cfdcc9",s:["28","30","32","34"]},
+{id:4,n:"Straight denim",c:"Bottoms",p:2799,e:"👖",bg:"#a9bbdc",s:["28","30","32","34"]},
+{id:5,n:"Wrap midi dress",c:"Dresses",p:3299,e:"👗",bg:"#f0d9a8",s:["XS","S","M","L"],t:"New"},
+{id:6,n:"Cotton slip dress",c:"Dresses",p:2599,o:3199,e:"👗",bg:"#e3c4d8",s:["XS","S","M","L"],t:"Sale"},
+{id:7,n:"Work jacket",c:"Outerwear",p:4499,e:"🧥",bg:"#d8cdbf",s:["S","M","L","XL"]},
+{id:8,n:"Quilted vest",c:"Outerwear",p:3199,e:"🧥",bg:"#b9c8c4",s:["S","M","L","XL"],t:"New"}
+];
+const cats=["All",...new Set(P.map(p=>p.c))];
+const inr=n=>"₹"+n.toLocaleString("en-IN");
+let cat="All",cart=[],sel={};
+try{cart=JSON.parse(localStorage.getItem("ir-cart")||"[]")}catch(e){}
+const $=id=>document.getElementById(id);
+const save=()=>{try{localStorage.setItem("ir-cart",JSON.stringify(cart))}catch(e){}};
+
+function chips(){$("chips").innerHTML=cats.map(c=>`<button class="chip" aria-pressed="${c===cat}" data-c="${c}">${c}</button>`).join("")}
+function grid(){
+  let l=P.filter(p=>cat==="All"||p.c===cat);const s=$("sort").value;
+  if(s==="1")l=[...l].sort((a,b)=>a.p-b.p);if(s==="2")l=[...l].sort((a,b)=>b.p-a.p);
+  $("grid").innerHTML=l.length?l.map(p=>{const z=sel[p.id]||p.s[1];
+  return `<article class="card"><div class="pic" style="background:${p.bg}" aria-hidden="true">${p.e}${p.t?`<span class="tag">${p.t}</span>`:""}</div>
+  <div class="info"><h3>${p.n}</h3><div class="price">${inr(p.p)}${p.o?`<s>${inr(p.o)}</s>`:""}</div>
+  <div class="sizes" role="group" aria-label="Size">${p.s.map(x=>`<button class="sz" data-id="${p.id}" data-s="${x}" aria-pressed="${x===z}">${x}</button>`).join("")}</div>
+  <button class="add" data-add="${p.id}">Add to cart</button></div></article>`}).join(""):`<p class="empty">No items in this category yet.</p>`;
+}
+function render(){
+  const n=cart.reduce((a,i)=>a+i.q,0);$("count").textContent=n;
+  const sub=cart.reduce((a,i)=>a+i.q*i.p,0),ship=sub>0&&sub<2999?149:0;
+  $("sub").textContent=inr(sub);$("ship").textContent=ship?inr(ship):"Free";$("tot").textContent=inr(sub+ship);
+  $("items").innerHTML=cart.length?cart.map((i,k)=>`<div class="row"><div class="t" style="background:${i.bg}">${i.e}</div>
+  <div><strong>${i.n}</strong><div style="color:var(--muted);font-size:.85rem">Size ${i.s}</div>
+  <div class="qty"><button data-q="${k}" data-d="-1" aria-label="Decrease">−</button>${i.q}<button data-q="${k}" data-d="1" aria-label="Increase">+</button></div></div>
+  <div style="text-align:right">${inr(i.p*i.q)}<br><button class="rm" data-rm="${k}">Remove</button></div></div>`).join(""):`<p style="color:var(--muted)">Your cart is empty. Add something from the shop.</p>`;
+  $("checkout").disabled=!cart.length;save();
+}
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),1800)}
+function drawer(on){$("drawer").classList.toggle("on",on);$("scrim").classList.toggle("on",on);$("drawer").setAttribute("aria-hidden",!on)}
+
+document.addEventListener("click",e=>{
+  const t=e.target;
+  if(t.dataset.c){cat=t.dataset.c;chips();grid()}
+  else if(t.dataset.s){sel[t.dataset.id]=t.dataset.s;grid()}
+  else if(t.dataset.add){const p=P.find(x=>x.id==t.dataset.add),s=sel[p.id]||p.s[1];
+    const f=cart.find(i=>i.id===p.id&&i.s===s);f?f.q++:cart.push({id:p.id,n:p.n,p:p.p,e:p.e,bg:p.bg,s,q:1});
+    render();toast(`${p.n} (${s}) added`)}
+  else if(t.dataset.q){const i=cart[t.dataset.q];i.q+=+t.dataset.d;if(i.q<1)cart.splice(t.dataset.q,1);render()}
+  else if(t.dataset.rm){cart.splice(t.dataset.rm,1);render()}
+});
+$("sort").onchange=grid;$("open").onclick=()=>drawer(true);$("close").onclick=$("scrim").onclick=()=>drawer(false);
+$("checkout").onclick=()=>{cart=[];render();drawer(false);toast("Order placed (demo)")};
+document.addEventListener("keydown",e=>{if(e.key==="Escape")drawer(false)});
+chips();grid();render();
+</script>
+</body>
+</html>
